@@ -14,7 +14,7 @@ namespace PSalesWebMvc.Controllers
     {
         private readonly PSalesWebMvcContext _context;
 
-        public DepartmentsController(PSalesWebMvcContext context)
+        public DepartmentsController(PSalesWebMvcContext context)//construtor para injeção de dependencias
         {
             _context = context;
         }

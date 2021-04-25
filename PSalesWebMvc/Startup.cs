@@ -37,7 +37,8 @@ namespace PSalesWebMvc
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddDbContext<PSalesWebMvcContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("PSalesWebMvcContext")));
+                    options.UseMySql(Configuration.GetConnectionString("PSalesWebMvcContext"),/*inserindo um delegate>>*/ builder =>
+                        builder.MigrationsAssembly("PSalesWebMvc")));//expressão lambda
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
