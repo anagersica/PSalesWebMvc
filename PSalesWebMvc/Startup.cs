@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PSalesWebMvc.Data;
+using PSalesWebMvc.Services;
 
 namespace PSalesWebMvc
 {
@@ -40,7 +41,7 @@ namespace PSalesWebMvc
                     options.UseMySql(Configuration.GetConnectionString("PSalesWebMvcContext"),/*inserindo um delegate>>*/ builder =>
                         builder.MigrationsAssembly("PSalesWebMvc")));//expressão lambda
             services.AddScoped<SeedingService>();//isso aqui registra o nosso serviço no sistema de injeção de dependência
-        
+            services.AddScoped<SellerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
