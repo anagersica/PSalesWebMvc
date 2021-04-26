@@ -1,9 +1,14 @@
-﻿@model IEnumerable<PSalesWebMvc.Models.Seller>
+﻿<!-- IEnumerable tipo do obj para receber a lista -->
+@model IEnumerable<PSalesWebMvc.Models.Seller>
+
 @{
     ViewData["Title"] = "Sellers";
 }
 
 <h2>@ViewData["Title"] </h2>
+<p>
+    <a asp-action="Create" class="btn btn-default">Create New</a> <!--btn-default serve para dar cor ao botao-->
+</p>
 
 <table class="table table-striped table-hover">
     <thead>
@@ -31,8 +36,9 @@
         </tr>
 
     </thead>
-    
-    <tbody><!--corpo da tabela-->
+
+    <tbody>
+        <!--corpo da tabela-->
         @foreach (var item in Model)
         {
             <tr>

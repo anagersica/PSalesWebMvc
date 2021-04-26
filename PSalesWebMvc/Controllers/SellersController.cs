@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PSalesWebMvc.Services;
+using PSalesWebMvc.Models;
+
 
 namespace PSalesWebMvc.Controllers
 {
@@ -11,6 +13,7 @@ namespace PSalesWebMvc.Controllers
     {
         //Essa dependência do SellerService chama o  FindAll
         private readonly SellerService _sellerService;
+        //construtor para injetar a dependência
         public SellersController(SellerService sellerService)
         {
             _sellerService = sellerService;
@@ -19,6 +22,17 @@ namespace PSalesWebMvc.Controllers
         {
             var list = _sellerService.FindAll();//model
             return View(list);//view
+        }
+        public IActionResult Create()
+        {
+            return View();//chama a funcão criada p o btn Create de Sellers
+        }
+        [HttpPost] //serve para informar que aação é POST. Pq automaticamente o sistema entende que é GET
+        [ValidateAntiForgeryToken]//contra CSRF - Especifica que a classe ou método ao qual este atributo é aplicado valida o token anti-falsificação. Se o token anti-falsificação não estiver disponível ou se o token for inválido, a validação falhará e o método de ação não será executado.
+        public IActionResult Create(Seller seller)//recebe o obj da requisição de criar novo funcionario e instancia o vendedor
+        {
+            _sellerService.Insert(seller);//vai inserir no BD
+            return RedirectToAction(nameof(Index)); //redireciona a requisicao a Index view 
         }
     }
 }
