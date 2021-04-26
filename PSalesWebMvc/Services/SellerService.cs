@@ -24,7 +24,7 @@ namespace PSalesWebMvc.Services
         }
         public void Insert(Seller obj)//método inclui ação insert no botao create do form de novo funhcionário
         {
-            obj.Department = _context.Department.First();//preenche com o primeiro id de Depart a col DepartId de Seller
+           //tiramos o objeto pq inserimos um caixa de seleção( obj.Department = _context.Department.First();//preenche com o primeiro id de Depart a col DepartId de Seller
             _context.Add(obj);
             _context.SaveChanges();
         }
