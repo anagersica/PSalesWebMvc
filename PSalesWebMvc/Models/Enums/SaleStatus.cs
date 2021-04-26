@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PSalesWebMvc.Models
+namespace PSalesWebMvc.Models.Enums
 {
     public enum SaleStatus : int //tipo enumerado
     {

@@ -39,14 +39,17 @@ namespace PSalesWebMvc
             services.AddDbContext<PSalesWebMvcContext>(options =>
                     options.UseMySql(Configuration.GetConnectionString("PSalesWebMvcContext"),/*inserindo um delegate>>*/ builder =>
                         builder.MigrationsAssembly("PSalesWebMvc")));//expressão lambda
+            services.AddScoped<SeedingService>();//isso aqui registra o nosso serviço no sistema de injeção de dependência
+        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, SeedingService seedingService)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                seedingService.Seed();
             }
             else
             {

@@ -15,7 +15,7 @@ namespace PSalesWebMvc.Data
         }
         //inserindo DbSet para que o Entity Frame reconheça as classes inseridas
         public DbSet<PSalesWebMvc.Models.Department> Department { get; set; }
-        public DbSet<PSalesWebMvc.Models.Department> Seller { get; set; }
-        public DbSet<PSalesWebMvc.Models.Department> SalesRecord { get; set; }
+        public DbSet<PSalesWebMvc.Models.Seller> Seller { get; set; }
+        public DbSet<PSalesWebMvc.Models.SalesRecord> SalesRecord { get; set; }
     }
 }
