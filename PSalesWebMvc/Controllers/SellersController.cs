@@ -40,5 +40,29 @@ namespace PSalesWebMvc.Controllers
             _sellerService.Insert(seller);//vai inserir no BD
             return RedirectToAction(nameof(Index)); //redireciona a requisicao a Index view 
         }
+        //ação para deletar seller GET
+        public IActionResult Delete(int? id)//a ? indica que o ID é opcional
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value);
+            if(obj == null)
+            {
+                return NotFound();
+            }
+            return View(obj);
+        }
+        //ação para deletar seller método POST
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _sellerService.Remove(id);
+            return RedirectToAction(nameof(Index));
+        }
+       
     }
 }
