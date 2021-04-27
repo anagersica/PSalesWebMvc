@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using PSalesWebMvc.Models;
 using Microsoft.EntityFrameworkCore;
 using PSalesWebMvc.Data;
+using Microsoft.EntityFrameworkCore;
 
 //Serviços dentro de Model- contem operações/regra de negócio/atualizar/salvar/acessar dados referentes ao Seller
 namespace PSalesWebMvc.Services
@@ -31,7 +32,7 @@ namespace PSalesWebMvc.Services
         //implementando para deletar um seller
         public Seller FindById(int id )
         {
-            return _context.Seller.FirstOrDefault(obj => obj.Id == id);
+            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);//sem o INCLUDE, por padrão carrega apenas dados da tabela SELLER 
         }
         public void Remove (int id)
         {
