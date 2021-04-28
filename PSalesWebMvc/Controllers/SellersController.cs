@@ -16,7 +16,7 @@ namespace PSalesWebMvc.Controllers
         //Essa dependência do SellerService chama o  FindAll
         private readonly SellerService _sellerService;
         private readonly DepartmentService _departmentService;
-        
+
 
         //construtor para injetar a dependência
         public SellersController(SellerService sellerService, DepartmentService departmentService)
@@ -24,43 +24,43 @@ namespace PSalesWebMvc.Controllers
             _sellerService = sellerService;
             _departmentService = departmentService;
         }
-        public IActionResult Index()//controlador acessou o model e encaminhou pra view
+        public async Task<IActionResult> Index()//controlador acessou o model e encaminhou pra view
         {
-            var list = _sellerService.FindAll();//model
+            var list = await _sellerService.FindAllAsync();//model
             return View(list);//view
         }
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _departmentService.FindAll();
+            var departments = await _departmentService.FindAllAsync();
             var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);//chama a funcão criada p o btn Create de Sellers
         }
         [HttpPost] //serve para informar que aação é POST. Pq automaticamente o sistema entende que é GET
         [ValidateAntiForgeryToken]//contra CSRF - Especifica que a classe ou método ao qual este atributo é aplicado valida o token anti-falsificação. Se o token anti-falsificação não estiver disponível ou se o token for inválido, a validação falhará e o método de ação não será executado.
-        public IActionResult Create(Seller seller)//recebe o obj da requisição de criar novo funcionario e instancia o vendedor
+        public async Task<IActionResult> Create(Seller seller)//recebe o obj da requisição de criar novo funcionario e instancia o vendedor
         {
             if (!ModelState.IsValid)//caso o form não esteja preenchido corretamente ele não deixa criar
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);//volta pro form até que seja preenchido corretamente
             }
-            _sellerService.Insert(seller);//vai inserir no BD
+            await _sellerService.InsertAsync(seller);//vai inserir no BD
             return RedirectToAction(nameof(Index)); //redireciona a requisicao a Index view 
         }
         //ação para deletar seller GET
-        public IActionResult Delete(int? id)//a ? indica que o ID é opcional
+        public async Task<IActionResult> Delete(int? id)//a ? indica que o ID é opcional
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
-           
-            var obj = _sellerService.FindById(id.Value);
+
+            var obj = await _sellerService.FindByIdAsync(id.Value);
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
-                
+
             }
             return View(obj);
         }
@@ -68,18 +68,18 @@ namespace PSalesWebMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _sellerService.Remove(id);
+            await _sellerService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -87,29 +87,29 @@ namespace PSalesWebMvc.Controllers
             return View(obj);
         }
         //Edit GET
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
-            var obj = _sellerService.FindById(id.Value);
-            if(obj == null)
+            var obj = await _sellerService.FindByIdAsync(id.Value);
+            if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
             //abrindo tela de edição do Edit
-            List<Department> departments = _departmentService.FindAll();
+            List<Department> departments = await _departmentService.FindAllAsync();
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
-                return View(viewModel);
-            }
+            return View(viewModel);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             if (!ModelState.IsValid)//caso o form não esteja preenchido corretamente ele não deixa criar
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);//volta pro form até que seja preenchido corretamente
             }
@@ -119,10 +119,10 @@ namespace PSalesWebMvc.Controllers
             }
             try
             {
-                _sellerService.Update(seller);
+                await _sellerService.UpdateAsync(seller);
                 return RedirectToAction(nameof(Index));
             }
-            catch(ApplicationException e)
+            catch (ApplicationException e)
             {
                 return RedirectToAction(nameof(Error), new { message = e.Message });
             }
@@ -137,14 +137,14 @@ namespace PSalesWebMvc.Controllers
             } */
 
         }
-        public IActionResult Error(string message)
+        public IActionResult Error(string message)//não será async pq não acessa a dados
         {
             var viewModel = new ErrorViewModel
             {
                 Message = message,
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-        };
-        return View(viewModel);
+            };
+            return View(viewModel);
         }
     }
 }
