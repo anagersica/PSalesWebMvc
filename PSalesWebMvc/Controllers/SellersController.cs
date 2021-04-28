@@ -39,6 +39,12 @@ namespace PSalesWebMvc.Controllers
         [ValidateAntiForgeryToken]//contra CSRF - Especifica que a classe ou método ao qual este atributo é aplicado valida o token anti-falsificação. Se o token anti-falsificação não estiver disponível ou se o token for inválido, a validação falhará e o método de ação não será executado.
         public IActionResult Create(Seller seller)//recebe o obj da requisição de criar novo funcionario e instancia o vendedor
         {
+            if (!ModelState.IsValid)//caso o form não esteja preenchido corretamente ele não deixa criar
+            {
+                var departments = _departmentService.FindAll();
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);//volta pro form até que seja preenchido corretamente
+            }
             _sellerService.Insert(seller);//vai inserir no BD
             return RedirectToAction(nameof(Index)); //redireciona a requisicao a Index view 
         }
@@ -80,6 +86,7 @@ namespace PSalesWebMvc.Controllers
             }
             return View(obj);
         }
+        //Edit GET
         public IActionResult Edit(int? id)
         {
             if(id == null)
@@ -100,7 +107,13 @@ namespace PSalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
-            if(id != seller.Id)
+            if (!ModelState.IsValid)//caso o form não esteja preenchido corretamente ele não deixa criar
+            {
+                var departments = _departmentService.FindAll();
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);//volta pro form até que seja preenchido corretamente
+            }
+            if (id != seller.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
             }
