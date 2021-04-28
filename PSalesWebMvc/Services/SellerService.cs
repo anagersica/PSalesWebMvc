@@ -35,12 +35,25 @@ namespace PSalesWebMvc.Services
             return await _context.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id);//sem o INCLUDE, por padrão carrega apenas dados da tabela SELLER 
             //o FirstOrDefault é o que acessa o BD por isso ele que recebeu o Async
         }
+      
+        
+        
         public /*void*/ async Task RemoveAsync(int id)
         {
-            var obj = await _context.Seller.FindAsync(id);
-            _context.Seller.Remove(obj);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var obj = await _context.Seller.FindAsync(id);
+                _context.Seller.Remove(obj);
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException e)
+            {
+                throw new IntegrityException(e.Message);
+
+            }
         }
+
+
         public /*void*/ async Task UpdateAsync(Seller obj)
         {
             bool hasAny = await _context.Seller.AnyAsync(x => x.Id == obj.Id);

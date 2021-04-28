@@ -24,17 +24,27 @@ namespace PSalesWebMvc.Controllers
             _sellerService = sellerService;
             _departmentService = departmentService;
         }
+
+
+
         public async Task<IActionResult> Index()//controlador acessou o model e encaminhou pra view
         {
             var list = await _sellerService.FindAllAsync();//model
             return View(list);//view
         }
+
+
+
+
         public async Task<IActionResult> Create()
         {
             var departments = await _departmentService.FindAllAsync();
             var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);//chama a funcão criada p o btn Create de Sellers
         }
+
+
+
         [HttpPost] //serve para informar que aação é POST. Pq automaticamente o sistema entende que é GET
         [ValidateAntiForgeryToken]//contra CSRF - Especifica que a classe ou método ao qual este atributo é aplicado valida o token anti-falsificação. Se o token anti-falsificação não estiver disponível ou se o token for inválido, a validação falhará e o método de ação não será executado.
         public async Task<IActionResult> Create(Seller seller)//recebe o obj da requisição de criar novo funcionario e instancia o vendedor
@@ -48,6 +58,11 @@ namespace PSalesWebMvc.Controllers
             await _sellerService.InsertAsync(seller);//vai inserir no BD
             return RedirectToAction(nameof(Index)); //redireciona a requisicao a Index view 
         }
+
+
+
+
+
         //ação para deletar seller GET
         public async Task<IActionResult> Delete(int? id)//a ? indica que o ID é opcional
         {
@@ -64,15 +79,29 @@ namespace PSalesWebMvc.Controllers
             }
             return View(obj);
         }
+
+
+
         //ação para deletar seller método POST
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            await _sellerService.RemoveAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _sellerService.RemoveAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch(IntegrityException e)//Messagem vinda do Entity Fram. Mas pode inserir a msg que quiser usando aspas
+            {
+                    return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
         }
+
+
+
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
