@@ -27,7 +27,7 @@ namespace PSalesWebMvc.Models
 
         }
         public double TotalSales(DateTime initial, DateTime final)
-        {
+        {//esse método foi delegado para seller
             return Sellers.Sum(seller => seller.TotalSales(initial, final));
 
         }
